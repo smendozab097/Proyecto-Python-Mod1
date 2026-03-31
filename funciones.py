@@ -4,33 +4,47 @@ def mostrar_menu():
           *** MENU ***
         1. Agregar producto
         2. Mostrar inventario
-        3. Calcular estadísticas
-        4. Salir""")
+        3. Buscar producto
+        4. Actualizar producto
+        5. Eliminar producto
+        6. Calcular estadísticas
+        7. Guardar CSV
+        8. Cargar CSV
+        9. Salir""")
 
-def validar_entrada(mensaje, tipo, condicion=None):
+def validar_entrada(mensaje, tipo, condicion=None, error_msg="Entrada inválida."):
     while True:
+
         valor = input(mensaje).strip()
         if not valor:
             print(f"El campo no puede estar vacío.")
             continue
+
         try:
             convertido = tipo(valor)
             if condicion and not condicion(convertido):
-                raise ValueError("El valor no cumple con la condición.")
+                raise ValueError(error_msg)
             return convertido
         except ValueError as e:
             print(f"Error: {e}. Inténtalo de nuevo.")
 
+
 def agregar_producto(inventario):
-    nombre = validar_entrada("Ingrese el nombre del producto: ", str, lambda x: x)
-    precio = validar_entrada("Ingrese el precio del producto: ", float, lambda x: x > 0)
-    cantidad = validar_entrada("Ingrese la cantidad de unidades: ", int, lambda x: x > 0)
-    producto = {"nombre": nombre, 
+    nombre = validar_entrada("Ingrese el nombre del producto: ", str, lambda x: not x.isdigit(), "El nombre puede contener numeros, pero no ser solo números.")
+    precio = validar_entrada("Ingrese el precio del producto: ", float, lambda x: x > 0, "El precio debe ser un número positivo.")
+    cantidad = validar_entrada("Ingrese la cantidad de unidades: ", int, lambda x: x > 0, "La cantidad debe ser un número positivo.")
+
+    id = len(inventario) + 1
+    producto = {
+                "id": id, 
+                "nombre": nombre, 
                 "precio": precio, 
                 "cantidad": cantidad}
+    
     inventario.append(producto)
-    costo_total = precio * cantidad
-    print(f"Producto '{nombre}' agregado. Costo total: {costo_total:.2f}")
+
+    print(f"Producto [{id}] agregado - nombre: {nombre} | precio: {precio} | cantidad: {cantidad}")
+
 
 def mostrar_inventario(inventario):
     if not inventario:
@@ -39,6 +53,7 @@ def mostrar_inventario(inventario):
     print("Inventario:")
     for prod in inventario:
         print(f"- {prod['nombre']}: Precio {prod['precio']:.2f}, Cantidad {prod['cantidad']}")
+
 
 def calcular_estadisticas(inventario):
     if not inventario:

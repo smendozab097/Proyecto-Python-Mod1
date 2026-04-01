@@ -7,7 +7,7 @@ def guardar_csv(inventario, ruta, incluir_header=True):
         return
 
     try:
-        with open(ruta, mode='w', newline='', encoding='utf-8') as archivo:
+        with open(ruta, mode='w', newline='', encoding='utf-8') as archivo: #w=modo escritura
             campos = ['nombre', 'precio', 'cantidad']
             escritor = csv.DictWriter(archivo, fieldnames=campos)
             

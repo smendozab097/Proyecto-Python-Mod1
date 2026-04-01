@@ -1,11 +1,13 @@
-from funciones import *
+from servicios import *
+from archivos import *
 
 # Programa principal
 inventario = []
+ruta_archivo = "inventario.py"
 opcion = 0
 while opcion != 9:
     menu()
-    opcion = int(input("\nIngresa el numero de la accion que deseas realizar: ").strip())
+    opcion = int(input("\nIngresa la accion que deseas realizar (1-9): ").strip())
     if opcion == 1:
         agregar_producto(inventario)
 
@@ -33,6 +35,24 @@ while opcion != 9:
 
     elif opcion == 6:
         calcular_estadisticas(inventario)
+
+    elif opcion == 7:
+        guardar_csv(inventario, ruta_archivo)
+
+    elif opcion == 8:
+        datos,invalidas = cargar_csv(ruta_archivo) 
+
+        if datos is not None:
+            print(f"\nSe encontraron {len(datos)} productos validos y {invalidas} filas con errores")
+            decision = input("Desea sobreescribir el inventario actual? S/N: ").strip().upper()
+            if decision == "S":
+                inventario=[]
+                for i,p in enumerate(datos,1):
+                    p['id']=i
+                    inventario.append(p)
+                    #accion_final = "Remplazo Total"
+            #else: 
+
 
     elif opcion == 9:
         print("Saliendo...")

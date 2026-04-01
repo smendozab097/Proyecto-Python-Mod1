@@ -57,7 +57,6 @@ def mostrar_inventario(inventario):
     if not inventario:
         print("El inventario está vacío.")
         return
-    #id = len(inventario) + 1
     print("\n-----------------------------------\n")
     print("""
           Inventario:
@@ -91,7 +90,6 @@ def actualizar_producto(inventario, nombre, nuevo_precio=None, nueva_cantidad=No
     print("Producto no encontrado.")
 
 def eliminar_producto(inventario, nombre):
-    #global inventario
     inventario = [p for p in inventario if p['nombre'] != nombre]
     print(f"Producto '{nombre}' eliminado.")
     print("\n-----------------------------------\n")
@@ -117,5 +115,4 @@ def calcular_estadisticas(inventario):
     print(f"Producto más caro: {p_caro['nombre']} (${p_caro['precio']:,.2f})")
     print(f"Mayor stock:      {p_stock['nombre']} ({p_stock['cantidad']} unidades)")
     print("===================================\n")
-    #print(f"Estadísticas: Total productos: {total_productos}, Valor total: {valor_total:.2f}, Precio promedio: {precio_promedio:.2f}")
     print("\n-----------------------------------\n")

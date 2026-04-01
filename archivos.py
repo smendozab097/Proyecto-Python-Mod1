@@ -2,12 +2,24 @@ import csv
 import os
 
 def guardar_csv(inventario, ruta, incluir_header=True):
+    """Guarda el inventario en un archivo CSV (inventario.csv) - sobrescribe el archivo si ya existe.
+    
+    Args:
+        inventario: Lista de productos a guardar.
+        ruta (str): Ruta del archivo CSV donde guardar.
+        incluir_header (bool): Si incluir encabezados en el CSV. Por defecto es True.
+    """
     if not inventario:
         print("Error: El inventario está vacío. No hay nada que guardar.")
         return
 
     try:
-        with open(ruta, mode='w', newline='', encoding='utf-8') as archivo: #w=modo escritura
+        # Crear el directorio si no existe
+        directorio = os.path.dirname(ruta) #os.path.dirname devuelve la parte del directorio de la ruta, si es una ruta sin directorio devuelve cadena vacía
+        if directorio and not os.path.exists(directorio): #
+            os.makedirs(directorio, exist_ok=True)
+        
+        with open(ruta, mode='w', newline='', encoding='utf-8') as archivo: #w=modo escritura, newline='' para evitar líneas en blanco adicionales, utf-8 para evitar problemas de codificación, with open para asegurar cierre del archivo
             campos = ['nombre', 'precio', 'cantidad']
             escritor = csv.DictWriter(archivo, fieldnames=campos)
             
@@ -28,11 +40,21 @@ def guardar_csv(inventario, ruta, incluir_header=True):
         print(f"Ocurrió un error inesperado al guardar: {e}")
 
 def cargar_csv(ruta):
+    """Carga productos desde un archivo CSV.
+    
+    Argumentos:
+        ruta (str): Ruta del archivo CSV a cargar.
+    
+    Retorna:
+        Una tupla con dos elementos:
+        - Lista de productos cargados (cada producto es un diccionario con nombre, precio y cantidad).
+        - Número de filas inválidas encontradas durante la carga.
+    """
     productos_cargados = []
     filas_invalidas = 0
     
     try:
-        with open(ruta, mode='r', encoding='utf-8') as archivo:
+        with open(ruta, mode='r', encoding='utf-8') as archivo: #r=modo lectura, utf-8 para evitar problemas de codificación, with open para asegurar cierre del archivo
             lector = csv.DictReader(archivo)
             
             # Validar encabezado

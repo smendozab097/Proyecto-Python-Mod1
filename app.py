@@ -3,11 +3,20 @@ from archivos import *
 
 # Programa principal
 inventario = []
-ruta_archivo = "inventario.py"
+ruta_archivo = "inventario.csv"
 opcion = 0
 while opcion != 9:
     menu()
-    opcion = int(input("\nIngresa la accion que deseas realizar (1-9): ").strip())
+    try:
+        opcion = int(input("\nIngresa la accion que deseas realizar (1-9): ").strip())
+        if opcion < 1 or opcion > 9:
+            print("Error: Debes ingresar un número entre 1 y 9.")
+            opcion = 0
+            continue
+    except ValueError:
+        print("Error: Entrada inválida. Por favor, ingresa un número.")
+        opcion = 0
+        continue
     if opcion == 1:
         agregar_producto(inventario)
 
@@ -22,10 +31,10 @@ while opcion != 9:
         nombre = input("Ingresa el nombre del producto que quieres actualizar: ").strip()
 
         nuevo_precio = input("Ingresa el nuevo precio del producto o deja en blanco para mantener: ").strip()
-
+        nuevo_precio = float(nuevo_precio) if nuevo_precio else None
             
         nueva_cantidad = input("Ingresa la nueva cantidad del producto o deja en blanco para mantener: ").strip()
-
+        nueva_cantidad = int(nueva_cantidad) if nueva_cantidad else None
 
         actualizar_producto(inventario, nombre, nuevo_precio, nueva_cantidad)
 
@@ -44,15 +53,33 @@ while opcion != 9:
 
         if datos is not None:
             print(f"\nSe encontraron {len(datos)} productos validos y {invalidas} filas con errores")
-            decision = input("Desea sobreescribir el inventario actual? S/N: ").strip().upper()
-            if decision == "S":
-                inventario=[]
-                for i,p in enumerate(datos,1):
-                    p['id']=i
-                    inventario.append(p)
-                    #accion_final = "Remplazo Total"
-            #else: 
-
+            while True:
+                decision = input("¿Qué deseas hacer? (S)obreescribir / (A)gregar / (C)ancelar: ").strip().upper()
+                if decision == "S":
+                    # Sobreescribir completamente el inventario
+                    inventario.clear()
+                    for i, p in enumerate(datos, 1):
+                        p['id'] = i
+                        inventario.append(p)
+                    print(f"✅ Inventario sobrescrito exitosamente. {len(inventario)} productos importados.")
+                    print("\n-----------------------------------\n")
+                    break
+                elif decision == "A":
+                    # Agregar los productos cargados sin perder los existentes
+                    max_id = max([p['id'] for p in inventario], default=0)
+                    for i, p in enumerate(datos, max_id + 1):
+                        p['id'] = i
+                        inventario.append(p)
+                    print(f"✅ {len(datos)} productos agregados al inventario existente.")
+                    print("\n-----------------------------------\n")
+                    break
+                elif decision == "C":
+                    # Cancelar la carga y mantener el inventario actual
+                    print("Carga cancelada. El inventario actual se mantiene intacto.")
+                    print("\n-----------------------------------\n")
+                    break
+                else:
+                    print("Entrada inválida. Por favor, ingresa 'S', 'A' o 'C'.")
 
     elif opcion == 9:
         print("Saliendo...")

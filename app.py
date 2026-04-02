@@ -46,7 +46,9 @@ while opcion != 9:
         calcular_estadisticas(inventario)
 
     elif opcion == 7:
-        guardar_csv(inventario, ruta_archivo)
+        ruta_usuario = input(f"Ingresa la ruta y el nombre de archivo para guardar (enter para '{ruta_archivo}'): ").strip()
+        ruta_a_guardar = ruta_usuario if ruta_usuario else ruta_archivo
+        guardar_csv(inventario, ruta_a_guardar)
 
     elif opcion == 8:
         datos,invalidas = cargar_csv(ruta_archivo) 
